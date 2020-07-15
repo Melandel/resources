@@ -78,9 +78,9 @@ for(let i = 0, a = ''; i < nbAnchors;i++) {
     let parts = label.split('/').filter(x => x.length > 0);
     console.log(parts);
     for(let j = 0, part=null; j < parts.length-1;j++){
-        parts[j] = '<span style="color:red; font-weight:bold;">@'+parts[j]+'</span>&nbsp;';
+        parts[j] = '<span style="color:red; font-weight:bold;">@'+parts[j].replaceAll(' ', '_')+'</span>&nbsp;';
     }
-    parts[parts.length-1] = '<span style="color:blue; font-weight:bold;">'+parts[parts.length-1]+'</span>';
+    parts[parts.length-1] = '<span style="color:blue; font-weight:bold;">'+parts[parts.length-1].replaceAll(' ', '_')+'</span>';
     a.innerHTML = parts.join('');
 }
 </script>
