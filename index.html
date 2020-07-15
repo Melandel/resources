@@ -34,7 +34,7 @@ tr:nth-child(even) {
   </tr>
         {% for res in site.static_files %}
             <tr>
-              <td><a class="post-link" href="{{ res.path | prepend: site.baseurl }}">{{ res.path | prepend: site.url }}</a></td>
+              <td><a class="post-link" href="{{ res.path | prepend: site.baseurl }}">{{ res.path | prepend: site.baseurl | prepend: site.url }}</a></td>
               <td>{{ res.modified_time | date: "%-d %b, %Y" }}</td>
             </tr>
         {% endfor %}
