@@ -34,11 +34,19 @@ tr:nth-child(even) {
     <th>Last modified</th>
   </tr>
         {% for res in site.static_files %}
-            <tr>
-             <td style="width:30px"><img src="https://img.icons8.com/fluent/24/000000/copy.png" style="cursor:pointer" url="{{ res.path | prepend: site.baseurl | prepend: site.url }}"/></td>
-              <td><a class="post-link" href="{{ res.path | prepend: site.baseurl }}">{{ res.path }}</a></td>
-              <td>{{ res.modified_time | date: "%-d %b, %Y" }}</td>
-            </tr>
+												{% assign bob_extension_length = '.bob' | size %}
+												{% assign path_length = res.path | size %}
+												{% assign start_index = path_length | minus: bob_extension_length %}
+												{% assign path_last_chars = res.path | slice: start_index, bob_extension_length %}
+												{% if path_last_chars == '.bob' %}
+																{% comment %}Do nothing{% endcomment %}
+												{% else %}
+																<tr>
+																	<td style="width:30px"><img src="https://img.icons8.com/fluent/24/000000/copy.png" style="cursor:pointer" url="{{ res.path | prepend: site.baseurl | prepend: site.url }}"/></td>
+																		<td><a class="post-link" href="{{ res.path | prepend: site.baseurl }}">{{ res.path }}</a></td>
+																		<td>{{ res.modified_time | date: "%-d %b, %Y" }}</td>
+																</tr>
+												{% endif %}
         {% endfor %}
 </table>
 </body>
