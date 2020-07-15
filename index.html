@@ -34,19 +34,19 @@ tr:nth-child(even) {
     <th>Last modified</th>
   </tr>
         {% for res in site.static_files %}
-												{% assign bob_extension_length = '.bob' | size %}
-												{% assign path_length = res.path | size %}
-												{% assign start_index = path_length | minus: bob_extension_length %}
-												{% assign path_last_chars = res.path | slice: start_index, bob_extension_length %}
-												{% if path_last_chars == '.bob' %}
-																{% comment %}Do nothing{% endcomment %}
-												{% else %}
-																<tr>
-																	<td style="width:30px"><img src="https://img.icons8.com/fluent/24/000000/copy.png" style="cursor:pointer" url="{{ res.path | prepend: site.baseurl | prepend: site.url }}"/></td>
-																		<td><a class="post-link" href="{{ res.path | prepend: site.baseurl }}">{{ res.path }}</a></td>
-																		<td>{{ res.modified_time | date: "%-d %b, %Y" }}</td>
-																</tr>
-												{% endif %}
+            {% assign bob_extension_length = '.bob' | size %}
+            {% assign path_length = res.path | size %}
+            {% assign start_index = path_length | minus: bob_extension_length %}
+            {% assign path_last_chars = res.path | slice: start_index, bob_extension_length %}
+            {% if path_last_chars == '.bob' %}
+                {% comment %}Do nothing{% endcomment %}
+            {% else %}
+                <tr>
+                 <td style="width:30px"><img src="https://img.icons8.com/fluent/24/000000/copy.png" style="cursor:pointer" url="{{ res.path | prepend: site.baseurl | prepend: site.url }}"/></td>
+                  <td><a class="post-link" href="{{ res.path | prepend: site.baseurl }}">{{ res.path }}</a></td>
+                  <td>{{ res.modified_time | date: "%-d %b, %Y" }}</td>
+                </tr>
+            {% endif %}
         {% endfor %}
 </table>
 </body>
@@ -70,5 +70,18 @@ for (let i = 0, copypasteButton; i < nbButtons; i++) {
     copypasteButton.addEventListener('click', copyToClipboard.bind(this, copypasteButton.getAttribute('url')));
 }
 
+let anchors = document.getElementsByTagName('a');
+let nbAnchors = anchors.length;
+for(let i = 0, a = ''; i < nbAnchors;i++) {
+    a = anchors[i];
+    let label = a.textContent;
+    let parts = label.split('/').filter(x => x.length > 0);
+    console.log(parts);
+    for(let j = 0, part=null; j < parts.length-1;j++){
+        parts[j] = '<span style="color:red; font-weight:bold;">@'+parts[j]+'</span>&nbsp;';
+    }
+    parts[parts.length-1] = '<span style="color:blue; font-weight:bold;">'+parts[parts.length-1]+'</span>';
+    a.innerHTML = parts.join('');
+}
 </script>
 </html>
