@@ -1,5 +1,8 @@
 # Object Calisthenics
 Object Calisthenics are programming exercises, formalized as a set of 9 rules invented by Jeff Bay in his book The ThoughtWorks Anthology.
+
+Credits to [jimmy klein](https://www.jimmyklein.fr/) for the code examples.
+
 |            | Table of Content                                                                                                           |
 | ---        | ------------------                                                                                                         |
 | **RULE 1** | [One level of indentation per method](#one-level-of-indentation-per-method)                                                |
@@ -18,7 +21,7 @@ Object Calisthenics are programming exercises, formalized as a set of 9 rules in
 <div style="display:inline-block; vertical-align: top;"><h2>Bad</h2><div>
 
 ```php
-// 🚫 Cette méthode contient deux niveaux d'indentation
+// 🚫 This method has 2 levels of indentation
 public function notify(array $contacts)
 {
     foreach ($contacts as $contact) {
@@ -32,7 +35,7 @@ public function notify(array $contacts)
 <div style="display:inline-block; vertical-align: top;"><h2>Good</h2><div>
 
 ```php
-// ✅Extraction du code indenté dans une autre méthode
+// ✅ Indented code was extracted into a method
 public function notify(array $contacts)
 {
     foreach ($contacts as $contact) {
@@ -49,7 +52,7 @@ private function notifyContact(Contact $contact)
 ```
 
 ```php
-// ✅ On filtre en amont de la boucle la liste des contacts
+// ✅ Filtering first, looping after
 public function notify(array $contacts)
 {
     $enabledContacts = array_filter(
@@ -64,7 +67,7 @@ public function notify(array $contacts)
 ```
 
 ```php
-// ✅ On demande à l'appelant de nous envoyer directement
+// ✅ Asking the caller to send us directly
 // la liste des contacts activés
 public function notify(array $enabledContacts)
 {
@@ -121,7 +124,7 @@ class ItemManager
         $this->repository = $repository;
     }
 
-    // ✅Utilisation d'early returns
+    // ✅ Using guard clause
     public function get($id)
     {
         if ($this->cache->has($id)) {
@@ -161,10 +164,10 @@ public function fizzBuzz(int $integer)
 <div style="display:inline-block; vertical-align: top;"><h2>Good</h2><div>
 
 ```php
-// Remplacement du int par un objet PositiveInteger
+// Subtituting the int with a PositiveInteger object
 public function fizzBuzz(PositiveInteger $integer)
 {
-    // ✅Plus de test de validation du paramètre en entrée
+    // ✅ No more validation upon the entry parameter
     if ($integer->isMultipleOf(15)) {
         return 'FizzBuzz';
     }
@@ -172,14 +175,14 @@ public function fizzBuzz(PositiveInteger $integer)
     // ...
 }
 
-// Utilisation d'un Value Object
+// Using a Value Object
 class PositiveInteger
 {
     private $value;
 
     public function __construct(int $integer)
     {
-      	// ✅Le test de validation de l'entier se fait directement ici
+      	// ✅ Validation upon the integer is written directly here
         if ($integer <= 0) {
             throw new \Exception('Only positive integer is handled');
         }
@@ -187,7 +190,7 @@ class PositiveInteger
         $this->value = $integer;
     }
 
-    // ✅On peut même ajouter des fonctions liés à cet objet
+    // ✅ You can also add functions tied to that object
     public function isMultipleOf(int $multiple)
     {
         return $this->valueinteger%$multiple === 0;
@@ -201,94 +204,23 @@ class PositiveInteger
 <div style="display:inline-block; vertical-align: top;"><h2>Bad</h2><div>
 
 ```php
-// Remplacement du int par un objet PositiveInteger
-public function fizzBuzz(PositiveInteger $integer)
-{
-    // ✅Plus de test de validation du paramètre en entrée
-    if ($integer->isMultipleOf(15)) {
-        return 'FizzBuzz';
-    }
-
-    // ...
-}
-
-// Utilisation d'un Value Object
-class PositiveInteger
-{
-    private $value;
-
-    public function __construct(int $integer)
-    {
-      	// ✅Le test de validation de l'entier se fait directement ici
-        if ($integer <= 0) {
-            throw new \Exception('Only positive integer is handled');
-        }
-
-        $this->value = $integer;
-    }
-
-    // ✅On peut même ajouter des fonctions liés à cet objet
-    public function isMultipleOf(int $multiple)
-    {
-        return $this->valueinteger%$multiple === 0;
-    }
-}
-```
-</div></div>
-<div style="display:inline-block; vertical-align: top;"><h2>Good</h2><div>
-
-```php
-// ✅On passe ici directement un objet contenant uniquement
-// des contacts activés.
-// On est donc assuré de n'avoir que des contacts actifs
-public function notify(EnabledContacts $enabledContacts)
-{
-    foreach ($enabledContacts as $contact) {
-        $this->mailer->send($contact);
-    }
-}
-
-class EnabledContacts implements \Iterator
-{
-    private $contacts;
-
-    public function __construct(array $contacts)
-    (
-        // ✅On ne garde ici que les contacts actifs
-        $this->contacts = array_filter(
-          $contacts,
-          fn(Contact $contact) => $contact->isEnabled()
-        );
-    )
-
-    // ... définition des méthode de l'interface \Iterator
-}
-```
-</div></div>
-</div>
-
-<div style="-webkit-column-count: 2; -moz-column-count: 2; column-count: 2; -webkit-column-rule: 1px dotted #e0e0e0; -moz-column-rule: 1px dotted #e0e0e0; column-rule: 1px dotted #e0e0e0;">
-<div style="display:inline-block; vertical-align: top;"><h2>Bad</h2><div>
-
-```php
-// 🚫 Deux paramètres sont ici fortement liés
+// 🚫 The two parameters here are tightly coupled
 public function findAll(int $start, int $end)
 {
-  // récupération paginée des données en BDD
+  // paginated recovery of data from the database
 }
 ```
 </div></div>
 <div style="display:inline-block; vertical-align: top;"><h2>Good</h2><div>
 
 ```php
-// ✅ On regroupe ici dans une seule classe deux attributs
-// qui étaient liés
+// ✅ Regrouping them inside one class
 public function findAll(Pagination $pagination)
 {
   $start = $pagination->getStart();
   $end = $pagination->getEnd();
 
-  ...// récupération paginée des données en BDD
+  ...// paginated recovery of data from the database
 }
 ```
 </div></div>
@@ -305,9 +237,8 @@ class Newsletter
   	private int $id;
     private string $title;
 
-    // 🚫L'objet contient déjà deux attributs, il ne peut
-    //   donc pas contenir un array. Il faut l'encapsuler
-    //   dans un objet
+    // 🚫 The object has alreadyy two attributes, hence he 
+    //    cannot hold an array. It should be encapsulated into an object
     private array $subscriberCollection;
 
     public function getNumberOfSubscriberWhoOpen()
@@ -332,7 +263,7 @@ class Newsletter
     private int $id;
     private string $title;
 
-    // ✅Le tableau est désormais encapsulé dans sa propre classe
+    // ✅ The array is now encapsulated in its own class
     private SubscriberCollection $subscriberCollection;
 
     public function getNumberOfSubscriberWhoOpen()
@@ -349,8 +280,8 @@ class SubscriberCollection
 {
     private array $subscriberCollection;
 
-    // ✅On peut déclarer ici des méthodes "métiers"
-    //   liées aux subscribers
+    // ✅ We can declare here the "business" methods
+    //   tied to the subscribers
     public function getSubscriberWhoOpen()
     {
       	$subscribersWhoOpen = array_filter(
@@ -402,8 +333,8 @@ class Identity
 $user = new User();
 $fullName = sprintf(
   '%s %s',
-  // 🚫 Non respect de la loi de demeter
-  // 🚫 getIdentity() pourrait très bien retourner null
+  // 🚫 Law of Demeter not respected
+  // 🚫 getIdentity() may return null one day
   //    et cela générerait une erreur
   $user->getIdentity()->getFirstName(),
   $user->getIdentity()->getLastName()
@@ -425,11 +356,7 @@ class User
 
       return sprintf(
         '%s %s',
-        // La règle d’origine s’applique par exemple au java ou le mot clé « this »
-        // n’a pas besoin d’être spécifié dans les classes.
-        // On ne compte donc pas ici la première ->
-        // car en PHP $this est obligatoire dans les classes
-        // pour utiliser un attribut
+        // The keyword « this » is an exception
         $this->identity->getFirstName(),
         $this->identity->getLastName()
       );
@@ -453,8 +380,8 @@ class Identity
 }
 
 $user = new User();
-// ✅Respect de la loi de Demeter
-// ✅Plus de gestion d'erreur ici
+// ✅ The Law of Demeter is respected
+// ✅ No more error handling at this level
 $fullName = $user->getFullName();
 ```
 </div></div>
@@ -494,7 +421,7 @@ $fullName = $user->getFullName();
 ```php
 class EntityManager
 {
-    // 🚫 4 attributs
+    // 🚫 4 attributes
     private EntityRepository $entityRepository;
     private LoggerInterface $logger;
     private MiddlewareInterface $middleware;
@@ -504,9 +431,9 @@ class EntityManager
     {
         $this->entityRepository->update($entity);
 
-        // 🚫Ces trois traitements pourraient très bien être délocalisés
-        //   afin d'éviter de surcharger cette méthode
-        //   et pour faciliter l'ajout d'autres traitements plus tard
+        // 🚫 These 3 treatments could be moved somewhere else
+        //   in order to not overload this method
+        //   and to make it easier to add other treatments in the future
         $this->logger->debug($entity);
         $this->middleware->sendMessage($entity);
         $this->notificationService->notify($entity);
@@ -519,8 +446,8 @@ class EntityManager
 ```php
 class EntityManager
 {
-    // ✅Moins de dépendances
-    // ✅Donc plus facile à mocker pour les tests unitaires
+    // ✅ Fewer dependencies
+    // ✅ Hence easier to mock for unit tests
     private EntityRepository $entityRepository;
     private EventDispatcher $eventDispatcher;
 
@@ -528,14 +455,14 @@ class EntityManager
     {
         $this->entityRepository->update($entity);
 
-        // ✅Il sera très facile d'ajouter un autre traitement
-        // en ajoutant un listener sur cet événement
+        // ✅ It'll be quite easy to add another treatment
+        // Just add a listener on this event
         $this->eventDispatcher->dispatch(Events::ENTITY_UPDATE, $entity);
     }
 }
 
-// ✅Les traitements ont été délocalisés dans 3 listener distincts
-// ✅Classes petites et facilement testables
+// ✅ The treatment have moved away in 3 dedicated listeners
+// ✅ Small classes that are easy to test
 class EntityToLog
 {
     private LoggerInterface $logger;
@@ -582,7 +509,7 @@ class Game
     public function diceRoll(int $score): void
     {
         $actualScore = $this->score->getScore();
-        // 🚫 On modifie en dehors de l'objet sa valeur pour ensuite lui "forcer" le résultat
+        // 🚫 The object is not responsible of changing its own attribute value
         $newScore = $actualScore + $score;
         $this->score->setScore($newScore);
     }
@@ -624,8 +551,8 @@ class Score
 
     public function addScore(Score $score): void
     {
-      	// ✅On définit ici la logique
-        //   d'addition de score
+      	// ✅ The addition logic belongs here,
+        //    Inside the object itself
         $this->score += $score->score;
     }
 }
